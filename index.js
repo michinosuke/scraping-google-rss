@@ -12,7 +12,11 @@ const { writeFile } = require("fs/promises");
 const axios = require("axios");
 const { XMLParser } = require("fast-xml-parser");
 const path = require("path");
-const xp = new XMLParser();
+const xp = new XMLParser({
+    isArray: (name, jpath, isLeafNode, isAttribute) => {
+      if (jpath === "rss.channel.item") return true;
+    }
+  });
 
 const getQ = (keywords, after, before) => {
   const afterStr = format(after, "yyyy-MM-dd");
