@@ -8,7 +8,12 @@ import { buildQuery } from "./build-query";
 import { sleep } from "./sleep";
 
 // XMLパーサーのインスタンス
-const xmlParser = new XMLParser();
+const xmlParser = new XMLParser({
+  isArray: (name, jpath, isLeafNode, isAttribute) => {
+    if (jpath === "rss.channel.item") return true;
+    return false;
+  },
+});
 
 // RSSアイテムの型定義（最低限のフィールドのみ）
 interface RssItem {
@@ -55,12 +60,7 @@ export const fetchAndSaveMonthlyData = async (year: number, month: number): Prom
     const jsonData = xmlParser.parse(response.data);
 
     // RSSフィードからアイテム配列を抽出
-    const items: RssItem[] = (() => {
-      const item = jsonData?.rss?.channel?.item;
-      if (Array.isArray(item)) return item;
-      if (item) return [item];
-      return [];
-    })();
+    const items: RssItem[] = jsonData?.rss?.channel?.item ?? [];
 
     // 対象月のアイテムのみフィルタリング
     const filteredItems = items.filter((item) => {
