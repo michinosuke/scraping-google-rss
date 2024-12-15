@@ -55,7 +55,12 @@ export const fetchAndSaveMonthlyData = async (year: number, month: number): Prom
     const jsonData = xmlParser.parse(response.data);
 
     // RSSフィードからアイテム配列を抽出
-    const items: RssItem[] = jsonData?.rss?.channel?.item ?? [];
+    const items: RssItem[] = (() => {
+      const item = jsonData?.rss?.channel?.item;
+      if (Array.isArray(item)) return item;
+      if (item) return [item];
+      return [];
+    })();
 
     // 対象月のアイテムのみフィルタリング
     const filteredItems = items.filter((item) => {
