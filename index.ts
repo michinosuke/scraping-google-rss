@@ -19,18 +19,21 @@ const main = async (): Promise<void> => {
   for (let year = startYear; year <= endYear; year++) {
     // 対象年内で開始月～12月までループ
     for (let month = year === startYear ? startMonth : 1; month <= 12; month++) {
-      const filePath = `${settings.outputJsonDirectory}/${settings.createFileName(year, month)}`;
-      if (existsSync(filePath)) {
-        console.log(`Exists ${year}/${month}`);
-        continue;
-      }
-      console.log(`Processing ${year}/${month}`);
-      await fetchAndSaveMonthlyData(year, month);
-
       // 現在年月まで到達したら終了
       if (year === endYear && month === endMonth) {
         break;
       }
+
+      const filePath = `${settings.outputJsonDirectory}/${settings.createFileName(year, month)}`;
+
+      // すでに json ファイルを出力済みであればスクレイピングを行わない
+      if (existsSync(filePath)) {
+        console.log(`Exists ${year}/${month}`);
+        continue;
+      }
+
+      console.log(`Processing ${year}/${month}`);
+      await fetchAndSaveMonthlyData(year, month);
     }
   }
 

@@ -5,7 +5,7 @@ export const settings: Setting = {
   // スクレイピングを開始する年月 (YYYY-MM)
   scrapeStartMonth: "2023-01",
 
-  // スクレイピングを終了する年月 (YYYY-MM or null)
+  // スクレイピングを終了する年月 (YYYY-MM or null)（※ この年月を含まない）
   scrapeEndMonth: "2023-06",
 
   // 一度に取得する日数の幅（最低2）
